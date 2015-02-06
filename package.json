@@ -2,10 +2,13 @@
   "name": "coffeelint-braces-padding",
   "version": "0.1.0",
   "description": "Validate the padding inside braces",
-  "main": "index.js",
+  "main": "./lib/braces_padding.js",
   "scripts": {
-    "pretest": "coffeelint -f coffeelint.json src/* test/*",
-    "test": "mycha run --reporter=spec"
+    "build": "coffee --compile --output lib/ src/",
+    "lint": "coffeelint -f coffeelint.json src/* test/*",
+    "pretest": "npm run-script lint && npm run-script build",
+    "test": "mycha run --reporter=spec",
+    "prepublish": "npm run-script build"
   },
   "repository": {
     "type": "git",
@@ -15,7 +18,10 @@
     "coffeelint",
     "coffeelintrule"
   ],
-  "author": "Charlie Rudolph",
+  "author": {
+    "name": "Charlie Rudolph",
+    "email": "charles.w.rudolph@gmail.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/charlierudolph/coffeelint-braces-padding/issues"

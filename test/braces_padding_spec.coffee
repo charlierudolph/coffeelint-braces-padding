@@ -1,5 +1,5 @@
 coffeelint = require 'coffeelint'
-BracePadding = require '../src/braces_padding'
+BracePadding = require '../lib/braces_padding'
 
 
 describe 'braces_padding', ->
