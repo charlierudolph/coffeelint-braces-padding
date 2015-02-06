@@ -16,6 +16,15 @@ describe 'braces_padding', ->
     beforeEach ->
       @config.braces_padding.padding = 0
 
+
+    context 'implicit', ->
+      beforeEach ->
+        @errors = coffeelint.lint 'a: b', @config
+
+      it 'returns no errors', ->
+        expect(@errors).to.be.empty
+
+
     context 'with no padding', ->
       beforeEach ->
         @errors = coffeelint.lint '{a: b}', @config
@@ -55,6 +64,14 @@ describe 'braces_padding', ->
   context 'padding set to 1', ->
     beforeEach ->
       @config.braces_padding.padding = 1
+
+
+    context 'implicit', ->
+      beforeEach ->
+        @errors = coffeelint.lint 'a: b', @config
+
+      it 'returns no errors', ->
+        expect(@errors).to.be.empty
 
 
     context 'with no padding', ->

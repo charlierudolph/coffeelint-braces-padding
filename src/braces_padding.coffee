@@ -29,6 +29,8 @@ class BracesPadding
 
 
   lintToken: (token, tokenApi) ->
+    return null if token.generated
+
     expected = tokenApi.config[@rule.name].padding
 
     actual = if token[0] is '{'
