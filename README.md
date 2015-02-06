@@ -1,5 +1,8 @@
 # coffeelint-braces-padding
 
+[![npm version](https://badge.fury.io/js/coffeelint-braces-padding.svg)](http://badge.fury.io/js/coffeelint-braces-padding)
+[![Build Status](https://travis-ci.org/charlierudolph/coffeelint-braces-padding.svg?branch=cr-travis)](https://travis-ci.org/charlierudolph/coffeelint-braces-padding)
+
 ## Examples
 ```coffee
 # Padding is 0
