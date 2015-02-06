@@ -1,6 +1,6 @@
 {
   "name": "coffeelint-braces-padding",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Validate the padding inside braces",
   "main": "./lib/braces_padding.js",
   "scripts": {
