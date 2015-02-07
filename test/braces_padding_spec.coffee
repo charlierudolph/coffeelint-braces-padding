@@ -4,15 +4,16 @@ BracePadding = require '../lib/braces_padding'
 examples =
   differentLines: '''
                   x = {
-                    a: b
+                    foo: bar
                   }
                   '''
-  implicit: 'a: b'
-  noSpaces: '{a: b}'
-  oneSpace: '{ a: b }'
-  oneSpaceLeft: '{ a: b}'
-  oneSpaceRight: '{a: b }'
-  twoSpaceLeftOneSpaceRight: '{  a: b }'
+  implicit: 'foo: bar'
+  noSpaces: '{foo: bar}'
+  oneSpace: '{ foo: bar }'
+  oneSpaceLeft: '{ foo: bar}'
+  oneSpaceRight: '{foo: bar }'
+  twoSpaceLeftOneSpaceRight: '{  foo: bar }'
+
 
 
 describe 'braces_padding', ->

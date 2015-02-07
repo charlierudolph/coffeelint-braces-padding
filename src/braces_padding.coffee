@@ -14,12 +14,17 @@ class BracesPadding
 
       # Padding is 0
       {a: b}     # Good
+      {a: b }    # Bad
+      { a: b}    # Bad
       { a: b }   # Bad
-      {  a: b  } # Bad
 
       # Padding is 1
       {a: b}     # Bad
+      {a: b }    # Bad
+      { a: b}    # Bad
       { a: b }   # Good
+      { a: b  }  # Bad
+      {  a: b }  # Bad
       {  a: b  } # Bad
       </code></pre>
       '''
@@ -28,12 +33,12 @@ class BracesPadding
   tokens: ['{', '}']
 
 
-  tokenDistance: (t1, t2) ->
-    t2[2].first_column - t1[2].first_column - 1
+  tokenDistance: (firstToken, secondToken) ->
+    secondToken[2].first_column - firstToken[2].last_column - 1
 
 
-  tokenOnSameLine: (t1, t2) ->
-    t1[2].first_line is t2[2].first_line
+  tokenOnSameLine: (firstToken, secondToken) ->
+    firstToken[2].first_line is secondToken[2].first_line
 
 
   lintToken: (token, tokenApi) ->
