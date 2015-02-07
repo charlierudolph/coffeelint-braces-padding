@@ -28,17 +28,26 @@ class BracesPadding
   tokens: ['{', '}']
 
 
+  tokenDistance: (t1, t2) ->
+    t2[2].first_column - t1[2].first_column - 1
+
+
+  tokenOnSameLine: (t1, t2) ->
+    t1[2].first_line is t2[2].first_line
+
+
   lintToken: (token, tokenApi) ->
     return null if token.generated
 
-    expected = tokenApi.config[@rule.name].padding
-
-    actual = if token[0] is '{'
-      nextToken = tokenApi.peek 1
-      nextToken[2].first_column - token[2].first_column - 1
+    [firstToken, secondToken] = if token[0] is '{'
+      [token, tokenApi.peek(1)]
     else
-      previousToken = tokenApi.peek -1
-      token[2].first_column - previousToken[2].last_column - 1
+      [tokenApi.peek(-1), token]
+
+    return null unless @tokenOnSameLine firstToken, secondToken
+
+    expected = tokenApi.config[@rule.name].padding
+    actual = @tokenDistance firstToken, secondToken
 
     if actual is expected
       null
