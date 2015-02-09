@@ -41,13 +41,22 @@ class BracesPadding
     firstToken[2].first_line is secondToken[2].first_line
 
 
+  findNearestToken: (token, tokenApi, difference) ->
+    totalDifference = 0
+    while true
+      totalDifference += difference
+      nearestToken = tokenApi.peek(totalDifference)
+      continue if nearestToken[0] is 'OUTDENT' or nearestToken[0] is 'INDENT'
+      return nearestToken
+
+
   lintToken: (token, tokenApi) ->
     return null if token.generated
 
     [firstToken, secondToken] = if token[0] is '{'
-      [token, tokenApi.peek(1)]
+      [token, @findNearestToken(token, tokenApi, 1)]
     else
-      [tokenApi.peek(-1), token]
+      [@findNearestToken(token, tokenApi, -1), token]
 
     return null unless @tokenOnSameLine firstToken, secondToken
 

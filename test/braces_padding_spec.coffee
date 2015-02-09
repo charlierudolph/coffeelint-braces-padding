@@ -2,19 +2,29 @@ coffeelint = require 'coffeelint'
 BracePadding = require '../lib/braces_padding'
 
 examples =
-  differentLines: '''
-                  x = {
-                    foo: bar
-                  }
-                  '''
   implicit: 'foo: bar'
-  noSpaces: '{foo: bar}'
-  oneSpace: '{ foo: bar }'
-  oneSpaceLeft: '{ foo: bar}'
-  oneSpaceRight: '{foo: bar }'
-  twoSpaceLeftOneSpaceRight: '{  foo: bar }'
-
-
+  ownLine: '''
+           x = {
+             foo: bar
+           }
+           '''
+  sameLine:
+    noSpaces: '{foo: bar}'
+    oneSpace: '{ foo: bar }'
+    twoSpaces: '{  foo: bar  }'
+  splitLine:
+    noSpaces: '''
+              {foo,
+               bar} = x
+              '''
+    oneSpace: '''
+              { foo,
+                bar } = x
+              '''
+    twoSpaces: '''
+               {  foo,
+                  bar  } = x
+               '''
 
 describe 'braces_padding', ->
   before ->
@@ -34,50 +44,72 @@ describe 'braces_padding', ->
         expect(@errors).to.be.empty
 
 
-    context 'on different lines', ->
+    context 'on own line', ->
       beforeEach ->
-        @errors = coffeelint.lint examples.differentLines, @config
+        @errors = coffeelint.lint examples.ownLine, @config
 
       it 'returns no errors', ->
         expect(@errors).to.be.empty
+
+
+    context 'on split line', ->
+
+      context 'with no padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.splitLine.noSpaces, @config
+
+        it 'returns no errors', ->
+          expect(@errors).to.be.empty
+
+
+      context 'with 1 space of padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.splitLine.oneSpace, @config
+
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
+          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 0, actual: 1)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 0, actual: 1)'
+
+
+      context 'with 2 spaces of padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.splitLine.twoSpaces, @config
+
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
+          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 0, actual: 2)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 0, actual: 2)'
 
 
     context 'on the same line', ->
 
       context 'with no padding', ->
         beforeEach ->
-          @errors = coffeelint.lint examples.noSpaces, @config
+          @errors = coffeelint.lint examples.sameLine.noSpaces, @config
 
         it 'returns no errors', ->
           expect(@errors).to.be.empty
 
 
-      context 'with 1 space of padding on the left brace', ->
-        beforeEach ->
-          @errors = coffeelint.lint examples.oneSpaceLeft, @config
-
-        it 'returns an error', ->
-          expect(@errors).to.have.lengthOf 1
-          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 0, actual: 1)'
-
-
-      context 'with 1 space of padding on the right brace', ->
-        beforeEach ->
-          @errors = coffeelint.lint examples.oneSpaceRight, @config
-
-        it 'returns an error', ->
-          expect(@errors).to.have.lengthOf 1
-          expect(@errors[0].context).to.eql 'Incorrect padding inside "}" (expected: 0, actual: 1)'
-
-
       context 'with 1 space of padding', ->
         beforeEach ->
-          @errors = coffeelint.lint examples.oneSpace, @config
+          @errors = coffeelint.lint examples.sameLine.oneSpace, @config
 
         it 'returns two errors', ->
           expect(@errors).to.have.lengthOf 2
           expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 0, actual: 1)'
           expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 0, actual: 1)'
+
+
+      context 'with 2 spaces of padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.sameLine.twoSpaces, @config
+
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
+          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 0, actual: 2)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 0, actual: 2)'
 
 
   context 'padding set to 1', ->
@@ -93,19 +125,19 @@ describe 'braces_padding', ->
         expect(@errors).to.be.empty
 
 
-    context 'on different lines', ->
+    context 'on own line', ->
       beforeEach ->
-        @errors = coffeelint.lint examples.differentLines, @config
+        @errors = coffeelint.lint examples.ownLine, @config
 
       it 'returns no errors', ->
         expect(@errors).to.be.empty
 
 
-    context 'on the same line', ->
+    context 'on split line', ->
 
       context 'with no padding', ->
         beforeEach ->
-          @errors = coffeelint.lint examples.noSpaces, @config
+          @errors = coffeelint.lint examples.splitLine.noSpaces, @config
 
         it 'returns two errors', ->
           expect(@errors).to.have.lengthOf 2
@@ -113,36 +145,49 @@ describe 'braces_padding', ->
           expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 1, actual: 0)'
 
 
-      context 'with no padding on the left brace', ->
-        beforeEach ->
-          @errors = coffeelint.lint examples.oneSpaceLeft, @config
-
-        it 'returns an error', ->
-          expect(@errors).to.have.lengthOf 1
-          expect(@errors[0].context).to.eql 'Incorrect padding inside "}" (expected: 1, actual: 0)'
-
-
-      context 'with no padding on the right brace', ->
-        beforeEach ->
-          @errors = coffeelint.lint examples.oneSpaceRight, @config
-
-        it 'returns an error', ->
-          expect(@errors).to.have.lengthOf 1
-          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 1, actual: 0)'
-
-
       context 'with 1 space of padding', ->
         beforeEach ->
-          @errors = coffeelint.lint examples.oneSpace, @config
+          @errors = coffeelint.lint examples.splitLine.oneSpace, @config
 
         it 'returns no errors', ->
           expect(@errors).to.be.empty
 
 
-      context 'with 2 spaces of padding on the left brace, 1 space of padding on the right', ->
+      context 'with 2 spaces of padding', ->
         beforeEach ->
-          @errors = coffeelint.lint examples.twoSpaceLeftOneSpaceRight, @config
+          @errors = coffeelint.lint examples.splitLine.twoSpaces, @config
 
-        it 'returns an error', ->
-          expect(@errors).to.have.lengthOf 1
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
           expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 1, actual: 2)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 1, actual: 2)'
+
+
+    context 'on the same line', ->
+
+      context 'with no padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.sameLine.noSpaces, @config
+
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
+          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 1, actual: 0)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 1, actual: 0)'
+
+
+      context 'with 1 space of padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.sameLine.oneSpace, @config
+
+        it 'returns no errors', ->
+          expect(@errors).to.be.empty
+
+
+      context 'with 2 spaces of padding', ->
+        beforeEach ->
+          @errors = coffeelint.lint examples.sameLine.twoSpaces, @config
+
+        it 'returns two errors', ->
+          expect(@errors).to.have.lengthOf 2
+          expect(@errors[0].context).to.eql 'Incorrect padding inside "{" (expected: 1, actual: 2)'
+          expect(@errors[1].context).to.eql 'Incorrect padding inside "}" (expected: 1, actual: 2)'
